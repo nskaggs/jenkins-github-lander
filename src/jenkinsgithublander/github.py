@@ -256,4 +256,3 @@ def user_is_in_org(user, org, request_info):
     log.debug("    Ensure {}'s membership in {} is public".format(
         user, org))
     return False
-
