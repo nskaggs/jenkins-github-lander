@@ -52,8 +52,11 @@ setup(
         'console_scripts': [
             ('lander-check-pulls='
              'jenkinsgithublander.scripts.check_pulls:main'),
+            ('lander-check-pull-mergable='
+             'jenkinsgithublander.scripts.check_pull_mergable:main'),
             ('lander-merge-result='
              'jenkinsgithublander.scripts.merge_result:main'),
         ],
     },
 )
+

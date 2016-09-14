@@ -1,6 +1,7 @@
 """Helpers for interacting with Github api requests."""
 from collections import namedtuple
 import json
+import re
 import requests
 from textwrap import dedent
 
@@ -60,7 +61,7 @@ def _is_mergeable(comments, owner, trigger, request_info):
         user = comment['user']['login']
 
         # Determine if a valid user has requested a merge.
-        if trigger in comment['body']:
+        if trigger.search(comment['body']):
             if user_is_in_org(user, org, request_info):
                 request_merge = True
 
@@ -151,6 +152,7 @@ def mergeable_pull_requests(trigger_word, request_info):
     log = logger.getLogger()
     prs = get_open_pull_requests(request_info)
     mergable_prs = []
+    trigger_re = re.compile(trigger_word)
 
     if prs:
         for pr in prs:
@@ -166,8 +168,7 @@ def mergeable_pull_requests(trigger_word, request_info):
 
             if comments:
                 owner = pr_info.base_user
-                if _is_mergeable(
-                        comments, owner, trigger_word, request_info):
+                if _is_mergeable(comments, owner, trigger_re, request_info):
                     mergable_prs.append(pr_info)
             else:
                 log.debug("    No comments")
@@ -255,3 +256,4 @@ def user_is_in_org(user, org, request_info):
     log.debug("    Ensure {}'s membership in {} is public".format(
         user, org))
     return False
+
